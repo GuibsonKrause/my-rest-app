@@ -1,67 +1,77 @@
+# My REST App
 
-# my-rest-app
+My REST App is a simple REST API application built using NestJS.
 
-### This is a sample RESTful API built with Nest.js, using MongoDB for data storage and RabbitMQ for message queuing.
+## Prerequisites
 
-  
+Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your system. This project was developed using Node.js version 14.x and npm version 6.x.
 
-## Getting Started
+## Project Setup
 
-### Prerequisites
+First, clone the project repository to your computer:
 
-- Node.js (v12 or higher)
-- MongoDB (v4 or higher)
-- RabbitMQ (v3 or higher)
+```bash
+git clone https://github.com/GuibsonKrause/my-rest-app.git
+```
 
-### Installation
+Navigate to the project directory:
 
-`cd my-rest-app`
+```bash
+cd my-rest-app
+```
 
-### Install the dependencies:
+Install all project dependencies using npm:
 
-`npm install`
+```bash
+npm install
+```
 
-Set up the environment variables:
+## Running the Project
 
-cp .env.example .env
+To run the project in development mode, use the following command:
 
-Edit the .env file and replace the values as necessary.
+```bash
+npm run start:dev
+```
 
-### Running the App
+The server will be available at `http://localhost:3000`.
 
-Start the MongoDB server:
+## Running the Tests
 
-`mongod --dbpath /path/to/data/directory`
+To run the project tests, use the following command:
 
-Start the RabbitMQ server:
+```bash
+npm run test
+```
 
-`rabbitmq-server`
+Test results will be displayed in the terminal.
 
-### Start the app:
+## Building the Project for Production
 
-`npm run start:dev`
+To build the project for production, use the following command:
 
-The app should now be running at http://localhost:3000.
+```bash
+npm run build
+```
 
-### Running the Tests
+Output files will be generated in the `dist` directory.
 
-To run the unit tests:
+## Running the Project in Production Mode
 
-`npm run test:unit`
+After building the project, use the following command to run the server in production mode:
 
-To run the integration tests:
+```bash
+npm run start:prod
+```
 
-`npm run test:integration`
+The server will be available at `http://localhost:3000`.
 
-To run the end-to-end tests:
+## Contributing
 
-`npm run test:e2e`
+If you would like to contribute to this project, follow the instructions below:
 
-
-### Built With
-
-Nest.js - A progressive Node.js framework for building efficient and scalable server-side applications.
-
-MongoDB - A NoSQL document-oriented database.
-
-RabbitMQ - An open-source message-broker software that originally implemented the Advanced Message Queuing Protocol (AMQP).
+1. Fork the repository.
+2. Create a branch for your feature or bug fix (`git checkout -b my-new-feature`).
+3. Commit your changes (`git commit -am 'Add a new feature'`).
+4. Push to your branch (`git push origin my-new-feature`).
+5. Create a Pull Request.

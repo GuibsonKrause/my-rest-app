@@ -87,11 +87,6 @@ export class UsersController {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-
-    // Remove avatar file from the FileSystem storage
-    // ...
-
-    // Remove the stored entry from the database
     await this.usersService.deleteUserAvatar(userId);
 
     return { message: 'Avatar deleted successfully' };

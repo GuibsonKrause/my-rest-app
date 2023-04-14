@@ -8,12 +8,11 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async createUser(user: Partial<User>): Promise<User> {
-    const newUser = new this.userModel(user);
+    const newUser = new (this.userModel as any)(user);
     const createdUser = await newUser.save();
     return createdUser;
-  }
+  }    
   
-
   async findByUserId(userId: number): Promise<User | null> {
     return this.userModel.findOne({ id: userId }).exec();
   }

@@ -6,37 +6,39 @@ import { User } from './user.schema';
 describe('UsersService', () => {
     let service: UsersService;
     let userModel: any;
+
+    const createMockUserModel = (user: Partial<User>) => ({
+      ...mockUserModel,
+      ...user,
+      save: jest.fn().mockResolvedValue(user),
+    });
   
     const mockUserModel = {
-      save: jest.fn(),
-      findOne: jest.fn().mockImplementation(() => ({ exec: jest.fn() })),
-      findOneAndUpdate: jest.fn().mockImplementation(() => ({ exec: jest.fn() })),
+      new: jest.fn().mockImplementation((user: Partial<User>) => {
+        return {
+          ...user,
+          save: jest.fn().mockResolvedValue({ ...user }),
+        };
+      }),
+      findOne: jest.fn(),
+      findOneAndUpdate: jest.fn(),
     };
   
     beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-          providers: [
-            UsersService,
-            {
-              provide: getModelToken(User.name),
-              useValue: {
-                new: () => jest.fn(),
-                constructor: jest.fn(),
-                findById: jest.fn(),
-                findOne: jest.fn(),
-                findOneAndUpdate: jest.fn(),
-                deleteOne: jest.fn(),
-                save: jest.fn(),
-              },
-            },
-          ],
-        }).compile();
-      
-        service = module.get<UsersService>(UsersService);
-        userModel = module.get<typeof User>(getModelToken(User.name));
-      });
-      
-  
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          UsersService,
+          {
+            provide: getModelToken(User.name),
+            useValue: mockUserModel,
+          },
+        ],
+      }).compile();
+    
+      service = module.get<UsersService>(UsersService);
+      userModel = module.get<typeof User>(getModelToken(User.name));
+    });
+    
     it('should be defined', () => {
       expect(service).toBeDefined();
     });
@@ -51,13 +53,16 @@ describe('UsersService', () => {
           avatar: null,
           hash: 'testhash',
         };
-  
-        const mockSave = jest.fn().mockResolvedValue(user);
-        mockUserModel.save = mockSave;
-  
+    
+        const newUser = {
+          ...user,
+          save: jest.fn().mockResolvedValue(user),
+        };
+        userModel.new.mockReturnValue(newUser);
+    
         const result = await service.createUser(user);
         expect(result).toEqual(user);
-        expect(mockSave).toHaveBeenCalled();
+        expect(userModel.new).toHaveBeenCalledWith(user);
       });
     });
 
@@ -65,14 +70,14 @@ describe('UsersService', () => {
         it('should find a user by id and return it', async () => {
           const user: Partial<User> = {
             id: 1,
-            email: 'george.bluth@reqres.in',
-            first_name: 'George',
-            last_name: 'Bluth',
-            avatar: 'https://reqres.in/img/faces/1-image.jpg',
+            email: 'test@example.com',
+            first_name: 'Test',
+            last_name: 'User',
+            avatar: 'updated-avatar-url',
           };
       
           const mockFindOne = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
-          mockUserModel.findOne = mockFindOne;
+          userModel.findOne = mockFindOne;
       
           const result = await service.findByUserId(1);
           expect(result).toEqual(user);
@@ -92,7 +97,7 @@ describe('UsersService', () => {
           };
       
           const mockFindOneAndUpdate = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
-          mockUserModel.findOneAndUpdate = mockFindOneAndUpdate;
+          userModel.findOneAndUpdate = mockFindOneAndUpdate;
       
           const result = await service.updateUserAvatar(1, 'updated-avatar-url', 'testhash');
           expect(result).toEqual(user);
@@ -116,7 +121,7 @@ describe('UsersService', () => {
         avatar: null,
         hash: null,
       };
-      mockUserModel.findOneAndUpdate.mockReturnValue(updatedUser);
+      userModel.findOneAndUpdate.mockReturnValue(updatedUser);
   
       const result = await service.deleteUserAvatar(userId);
       expect(result).toEqual(updatedUser);
